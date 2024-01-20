@@ -77,7 +77,7 @@ namespace MG.Http.Urls.Queries
         /// <param name="oneOfLength">The length of the value.</param>
         /// <param name="format">The format to use for the value, if applicable.</param>
         /// <inheritdoc cref="Guard.InvalidKey(string?, string)" path="/exception"/>
-        public QueryParameter(string key, OneOf<string?, ISpanFormattable> oneOf, int oneOfLength, string? format = null)
+        private QueryParameter(string key, OneOf<string?, ISpanFormattable> oneOf, int oneOfLength, string? format = null)
         {
             Guard.InvalidKey(key);
             _key = key;
@@ -91,22 +91,27 @@ namespace MG.Http.Urls.Queries
             _format = format;
         }
 
+        /// <inheritdoc cref="IComparable{T}.CompareTo(T)"/>
         public int CompareTo(QueryParameter other)
         {
             return StringComparer.InvariantCultureIgnoreCase.Compare(_key, other._key);
         }
+        /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
         public bool Equals(QueryParameter other)
         {
             return StringComparer.InvariantCultureIgnoreCase.Equals(_key, other._key);
         }
+        /// <inheritdoc cref="Equals(QueryParameter)"/>
         public bool Equals(IQueryParameter? other)
         {
             return StringComparer.InvariantCultureIgnoreCase.Equals(_key, other?.Key);
         }
+        /// <inheritdoc cref="object.Equals(object?)"/>
         public override bool Equals([NotNullWhen(true)] object? obj)
         {
             return obj is QueryParameter other && this.Equals(other);
         }
+        /// <inheritdoc cref="IEqualityComparer{T}.GetHashCode(T)" path="/*[not(self::exception)]"/>
         public override int GetHashCode()
         {
             return StringComparer.InvariantCultureIgnoreCase.GetHashCode(this.Key);
@@ -184,6 +189,17 @@ namespace MG.Http.Urls.Queries
         }
 
 #if NET7_0_OR_GREATER
+        /// <summary>
+        /// Tries to convert the value of the query parameter to a specified numeric type.
+        /// </summary>
+        /// <typeparam name="T">The type of number to convert the value to.</typeparam>
+        /// <param name="value">When this method returns, this variable will be the converted
+        /// number result or the default value of <typeparamref name="T"/> if it cannot be converted.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the query parameter's value was successfully converted; otherwise,
+        /// <see langword="false"/>.
+        /// </returns>
         public bool TryValueAsNumber<T>(out T value) where T : struct, INumber<T>
         {
             if (this.IsEmpty)
@@ -221,10 +237,16 @@ namespace MG.Http.Urls.Queries
             return new(key);
         }
 
+        /// <summary>
+        /// Determines if two parameter instances are equal through their keys.
+        /// </summary>
         public static bool operator ==(QueryParameter x, QueryParameter y)
         {
             return x.Equals(y);
         }
+        /// <summary>
+        /// Determines if two parameter instances are not equal through their keys.
+        /// </summary>
         public static bool operator !=(QueryParameter x, QueryParameter y)
         {
             return !(x == y);

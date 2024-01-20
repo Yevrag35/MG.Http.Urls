@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace MG.Http.Urls.Internal
 {
-    public readonly struct OneOf<T0, T1> : IEquatable<OneOf<T0, T1>>
+    internal readonly struct OneOf<T0, T1> : IEquatable<OneOf<T0, T1>>
     {
         static readonly Type _stringType = typeof(string);
         readonly bool _isItem0;
@@ -16,12 +14,12 @@ namespace MG.Http.Urls.Internal
         readonly T1? _item1;
 
         [MemberNotNullWhen(true, nameof(_item0))]
-        public bool IsT0 => _isItem0;
+        internal bool IsT0 => _isItem0;
         [MemberNotNullWhen(true, nameof(_item1))]
-        public bool IsT1 => _isItem1;
+        internal bool IsT1 => _isItem1;
 
-        public T0 AsT0 => _item0 ?? throw new InvalidOperationException("Value is not T0.");
-        public T1 AsT1 => _item1 ?? throw new InvalidOperationException("Value is not T1.");
+        internal T0 AsT0 => _item0 ?? throw new InvalidOperationException("Value is not T0.");
+        internal T1 AsT1 => _item1 ?? throw new InvalidOperationException("Value is not T1.");
 
         private OneOf(T0? item0, T1? item1, bool isItem0, bool isItem1, bool isT0String, bool isT1String)
         {
@@ -90,7 +88,7 @@ namespace MG.Http.Urls.Internal
                 : o.GetHashCode();
         }
 
-        public bool TryPickT0([NotNullWhen(true)] out T0? value, [NotNullWhen(false)] out T1? remainder)
+        internal bool TryPickT0([NotNullWhen(true)] out T0? value, [NotNullWhen(false)] out T1? remainder)
         {
             if (this.IsT0)
             {
@@ -105,7 +103,7 @@ namespace MG.Http.Urls.Internal
                 return false;
             }
         }
-        public bool TryPickT1([NotNullWhen(true)] out T1? value, [NotNullWhen(false)] out T0? remainder)
+        internal bool TryPickT1([NotNullWhen(true)] out T1? value, [NotNullWhen(false)] out T0? remainder)
         {
             if (this.IsT1)
             {

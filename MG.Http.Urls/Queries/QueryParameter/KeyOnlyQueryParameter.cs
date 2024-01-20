@@ -57,7 +57,7 @@ namespace MG.Http.Urls.Queries
             return StringComparer.InvariantCultureIgnoreCase.GetHashCode(this.Key);
         }
 
-        /// <inheritdoc cref="QueryParameter.ToString"/>
+        /// <inheritdoc cref="QueryParameter.ToString()"/>
         public override string ToString()
         {
             return this.ToString(null, null);

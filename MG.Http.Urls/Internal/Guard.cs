@@ -27,13 +27,13 @@ namespace MG.Http.Urls.Internal
         }
 
         /// <summary>
-        /// Throws an exception if <paramref name="argument"/> is null or empty.</summary>
-        /// <param name="argument">The string argument to validate as non-null and non-empty.</param>
+        /// Throws an exception if <paramref name="value"/> is null or empty.</summary>
+        /// <param name="value">The string argument to validate as non-null and non-empty.</param>
         /// <param name="paramName">
-        ///     The name of the parameter with which <paramref name="argument"/> corresponds.
+        ///     The name of the parameter with which <paramref name="value"/> corresponds.
         /// </param>
-        /// <exception cref="ArgumentNullException"><paramref name="argument"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="argument"/> is empty.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> is empty.</exception>
         internal static void NotNullOrEmpty([NotNull] string? value, [CallerArgumentExpression(nameof(value))] string paramName = "")
         {
 #if NET8_0_OR_GREATER

@@ -7,14 +7,21 @@ using System.Runtime.CompilerServices;
 
 namespace MG.Http.Urls.Queries
 {
+    /// <summary>
+    /// A <see langword="static"/> class for constructing <see cref="IQueryParameter"/> instances with 
+    /// numeric values.
+    /// </summary>
     public static class QueryNumericParameter
     {
         /// <summary>
-        /// 
+        /// Attempts to create a new <see cref="IQueryParameter"/> instance from the specified key and
+        /// formattable, numeric value.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="formattable"></param>
-        /// <param name="result"></param>
+        /// <param name="key">The key of the parameter.</param>
+        /// <param name="formattable">The formattable, numeric value to use.</param>
+        /// <param name="result">When this method returns, this variable will be the resulting
+        /// <see cref="IQueryParameter"/> instance that was constructed, or <see langword="null"/> if the
+        /// type of <paramref name="formattable"/> is not supported.</param>
         /// <returns>
         ///     <see langword="true"/> if the <paramref name="formattable"/> is supported and was created; 
         ///     otherwise, <see langword="false"/>.
@@ -104,7 +111,11 @@ namespace MG.Http.Urls.Queries
             throw new NotSupportedException(string.Format(TYPE_NOT_SUPPORTED_FORMAT, typeof(T)));
         }
     }
-
+    /// <summary>
+    /// A struct implementing <see cref="IQueryParameter"/> that represents a query parameter with a number
+    /// value.
+    /// </summary>
+    /// <typeparam name="T">The type of number the parameter's value is.</typeparam>
     public readonly struct QueryNumericParameter<T> : IEquatable<QueryNumericParameter<T>>, IQueryParameter
         where T : struct, INumber<T>
     {
@@ -116,7 +127,9 @@ namespace MG.Http.Urls.Queries
 
         /// <inheritdoc cref="QueryParameter.IsEmpty"/>
         public bool IsEmpty => !_isNotEmpty;
+        /// <inheritdoc cref="QueryParameter.Key"/>
         public string Key => _key ?? string.Empty;
+        /// <inheritdoc cref="QueryParameter.MaxLength"/>"
         public int MaxLength => _maxLength;
         /// <summary>
         /// The numeric value of the query parameter.
@@ -166,6 +179,7 @@ namespace MG.Http.Urls.Queries
             _isNotEmpty = true;
         }
 
+        /// <inheritdoc cref="QueryParameter.Equals(IQueryParameter?)"/>
         public bool Equals(IQueryParameter? otherParam)
         {
             if (otherParam is QueryParameter qp)
@@ -181,14 +195,17 @@ namespace MG.Http.Urls.Queries
                 return false;
             }
         }
+        /// <inheritdoc cref="QueryParameter.Equals(QueryParameter)"/>
         public bool Equals(QueryParameter other)
         {
             return StringComparer.InvariantCultureIgnoreCase.Equals(this.Key, other.Key);
         }
+        /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
         public bool Equals(QueryNumericParameter<T> other)
         {
             return StringComparer.InvariantCultureIgnoreCase.Equals(this.Key, other.Key);
         }
+        /// <inheritdoc cref="object.Equals(object?)"/>
         public override bool Equals([NotNullWhen(true)] object? obj)
         {
             if (obj is QueryParameter qp)
@@ -208,6 +225,7 @@ namespace MG.Http.Urls.Queries
                 return false;
             }
         }
+        /// <inheritdoc cref="QueryParameter.GetHashCode"/>"
         public override int GetHashCode()
         {
             return StringComparer.InvariantCultureIgnoreCase.GetHashCode(this.Key);
@@ -302,10 +320,12 @@ namespace MG.Http.Urls.Queries
             return true;
         }
 
+        /// <inheritdoc cref="QueryParameter.operator ==(QueryParameter, QueryParameter)"/>
         public static bool operator ==(QueryNumericParameter<T> left, QueryNumericParameter<T> right)
         {
             return left.Equals(right);
         }
+        /// <inheritdoc cref="QueryParameter.operator !=(QueryParameter, QueryParameter)"/>
         public static bool operator !=(QueryNumericParameter<T> left, QueryNumericParameter<T> right)
         {
             return !(left == right);

@@ -22,7 +22,9 @@ namespace MG.Http.Urls.Queries
 
         /// <inheritdoc cref="QueryParameter.IsEmpty"/>
         public bool IsEmpty => !_isNotEmpty;
+        /// <inheritdoc cref="QueryParameter.Key"/>
         public string Key => _key ?? string.Empty;
+        /// <inheritdoc cref="QueryParameter.MaxLength"/>
         public int MaxLength => _maxLength;
         /// <summary>
         /// The <see cref="bool"/> value of the query parameter.
@@ -42,20 +44,22 @@ namespace MG.Http.Urls.Queries
             _maxLength = key.Length + 1 + bool.FalseString.Length;
             _isNotEmpty = true;
         }
-
+        /// <inheritdoc cref="QueryParameter.Equals(IQueryParameter?)"/>
         public bool Equals(IQueryParameter? other)
         {
             return StringComparer.InvariantCultureIgnoreCase.Equals(_key, other?.Key);
         }
+        /// <inheritdoc cref="QueryParameter.Equals(QueryParameter)"/>
         public bool Equals(QueryParameter other)
         {
             return StringComparer.InvariantCultureIgnoreCase.Equals(_key, other.Key);
         }
+        /// <inheritdoc cref="QueryParameter.GetHashCode"/>
         public override int GetHashCode()
         {
             return HashCode.Combine(StringComparer.InvariantCultureIgnoreCase.GetHashCode(this.Key));
         }
-        /// <inheritdoc cref="QueryParameter.ToString"/>
+        /// <inheritdoc cref="QueryParameter.ToString()"/>
         public override string ToString()
         {
             return this.ToString(null, null);
@@ -92,7 +96,7 @@ namespace MG.Http.Urls.Queries
         {
             return new(key, true);
         }
-
+        /// <inheritdoc cref="QueryParameter.TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider?)"/>
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             ReadOnlySpan<char> key = this.Key;
@@ -118,7 +122,7 @@ namespace MG.Http.Urls.Queries
         }
 
 #if NET7_0_OR_GREATER
-        public bool TryValueAsNumber<T>(out T value) where T : struct, INumber<T>
+        bool IQueryParameter.TryValueAsNumber<T>(out T value)
         {
             if (!this.IsEmpty)
             {

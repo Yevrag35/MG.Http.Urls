@@ -1,5 +1,6 @@
 using MG.Http.Urls.Internal;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MG.Http.Urls.Queries
 {
@@ -8,7 +9,26 @@ namespace MG.Http.Urls.Queries
     /// <see cref="IReadOnlyCollection{T}"/> for <see cref="IQueryParameter"/> and 
     /// <see cref="ISpanFormattable"/>.
     /// </summary>
-    public sealed class QueryParameterCollection : IReadOnlyCollection<IQueryParameter>, ISpanFormattable
+    /// <remarks>
+    /// <para>
+    /// This collection works most efficiently
+    /// when used repeatedly, so it is recommended to incorporate it into object pooling.
+    /// </para>
+    /// <para>Utilizing the <see cref="MaxLength"/> property of this collection, you can determine the size needed
+    /// for allocating a buffer for the formatted query parameters.  An example of how to
+    /// use 
+    /// <code>
+    ///     Span&lt;char&gt; chars = stackalloc char[queryParameters.MaxLength];
+    ///     collection.TryFormat(chars, out int written, format, provider);
+    ///     
+    ///     string urlQuery = new string(chars.Slice(0, written));
+    /// </code>
+    /// </para>
+    /// </remarks>
+    public sealed class QueryParameterCollection : 
+        ICollection<IQueryParameter>, 
+        IReadOnlyDictionary<string, IQueryParameter>,
+        ISpanFormattable
     {
         readonly HashSet<IQueryParameter> _params;
         int _maxLength;
@@ -39,6 +59,10 @@ namespace MG.Http.Urls.Queries
         /// The number of query parameters contained in the collection.
         /// </value>
         public int Count => _params.Count;
+
+        bool ICollection<IQueryParameter>.IsReadOnly => false;
+        IEnumerable<string> IReadOnlyDictionary<string, IQueryParameter>.Keys => _params.Select(p => p.Key);
+        IEnumerable<IQueryParameter> IReadOnlyDictionary<string, IQueryParameter>.Values => _params.AsEnumerable();
 
         /// <summary>
         /// Gets the maximum length of the query parameters combined.
@@ -152,6 +176,24 @@ namespace MG.Http.Urls.Queries
                 return false;
             }
         }
+        void ICollection<IQueryParameter>.Add(IQueryParameter item)
+        {
+            _ = this.Add(item);
+        }
+
+        /// <inheritdoc cref="HashSet{T}.UnionWith(IEnumerable{T})" path="/*[not(self::summary)]"/>
+        /// <summary>
+        /// Adds the specified collection's parameters to this <see cref="QueryParameterCollection"/>
+        /// instance omitting parameters whose keys already exist in this collection.
+        /// </summary>
+        public void AddMany(IEnumerable<IQueryParameter> other)
+        {
+            foreach (IQueryParameter p in other)
+            {
+                _ = this.Add(p);
+            }
+        }
+
         /// <summary>
         /// Adds a query parameter to the collection, or updates it if it already exists.
         /// </summary>
@@ -183,6 +225,36 @@ namespace MG.Http.Urls.Queries
             _params.Clear();
             _maxLength = 0;
         }
+        /// <summary>
+        /// Determines whether the collection contains the specified query parameter.
+        /// </summary>
+        /// <param name="item">The parameter to locate in the collection.</param>
+        /// <returns>
+        ///     <see langword="true"/> if the parameter is found in the collection; otherwise,
+        ///     <see langword="false"/>.
+        /// </returns>
+        public bool Contains(IQueryParameter item)
+        {
+            return _params.Contains(item);
+        }
+        /// <summary>
+        /// Determines whether the collection contains a query parameter with the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate in the collection.</param>
+        /// <returns>
+        /// <see langword="true"/> if the collection contains a query parameter with the specified key;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        public bool ContainsKey(string key)
+        {
+            return !string.IsNullOrWhiteSpace(key) && _params.Contains(KeyOnlyQueryParameter.Create(key));
+        }
+
+        /// <inheritdoc cref="ICollection{T}.CopyTo(T[], int)"/>
+        public void CopyTo(IQueryParameter[] array, int arrayIndex)
+        {
+            _params.CopyTo(array, arrayIndex);
+        }
 
         /// <inheritdoc cref="HashSet{T}.EnsureCapacity(int)" path="/*[not(self::summary)]"/>
         /// <summary>
@@ -203,16 +275,22 @@ namespace MG.Http.Urls.Queries
         /// </returns>
         public bool Remove(string key)
         {
-            return !string.IsNullOrWhiteSpace(key) && _params.TryGetValue(QueryParameter.FromKeyOnly(key), out IQueryParameter? actual)
-                ? this.Remove(actual)
-                : false;
+            return !string.IsNullOrWhiteSpace(key)
+                   &&
+                   this.Remove(KeyOnlyQueryParameter.Create(key));
         }
-
-        private bool Remove(IQueryParameter parameter)
+        /// <summary>
+        /// Removes the specified query parameter from the collection.
+        /// </summary>
+        /// <param name="parameter">The parameter to remove.</param>
+        /// <returns>
+        ///     <inheritdoc cref="Remove(string)"/>
+        /// </returns>
+        public bool Remove(IQueryParameter parameter)
         {
-            if (_params.Remove(parameter))
+            if (_params.TryGetValue(parameter, out IQueryParameter? actual) && _params.Remove(actual))
             {
-                _maxLength -= parameter.MaxLength;
+                _maxLength -= actual.MaxLength;
                 return true;
             }
             else
@@ -220,6 +298,7 @@ namespace MG.Http.Urls.Queries
                 return false;
             }
         }
+
         /// <summary>
         /// Converts the value of this instance to its equivalent string representation using the 
         /// specified format and culture-specific format information.
@@ -239,6 +318,16 @@ namespace MG.Http.Urls.Queries
             _ = this.TryFormat(chars, out int written, format, provider);
             return new string(chars.Slice(0, written));
         }
+
+        /// <summary>
+        /// Sets the capacity of the <see cref="QueryParameterCollection"/> to the actual number of 
+        /// parameters it contains, rounded up to a nearby, implementation-specific value.
+        /// </summary>
+        public void TrimExcess()
+        {
+            _params.TrimExcess();
+        }
+
         /// <summary>
         /// Tries to format the current instance into the provided span of characters.
         /// </summary>
@@ -286,15 +375,45 @@ namespace MG.Http.Urls.Queries
 
             return true;
         }
+
+        /// <summary>
+        /// Searches the collection for a query parameter with the specified key and returns the equal value
+        /// it finds, if any.
+        /// </summary>
+        /// <param name="key">The key of the parameter to locate in the collection.</param>
+        /// <param name="value">
+        ///     The parameter from the collection that the search found, or <see langword="null"/> if the 
+        ///     search yielded no match.
+        /// </param>
+        /// <returns>
+        ///     <see langword="true"/> if the search was successful; otherwise, <see langword="false"/>.
+        /// </returns>
+        public bool TryGetValue(string key, [NotNullWhen(true)] out IQueryParameter? value)
+        {
+            value = null;
+            return !string.IsNullOrWhiteSpace(key)
+                   &&
+                   _params.TryGetValue(QueryParameter.FromKeyOnly(key), out value);
+        }
+
+        #region ENUMERATORS
         /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
         public IEnumerator<IQueryParameter> GetEnumerator()
         {
             return _params.GetEnumerator();
         }
+        IEnumerator<KeyValuePair<string, IQueryParameter>> IEnumerable<KeyValuePair<string, IQueryParameter>>.GetEnumerator()
+        {
+            foreach (IQueryParameter p in _params)
+            {
+                yield return new KeyValuePair<string, IQueryParameter>(p.Key, p);
+            }
+        }
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
+
+        #endregion
     }
 }
-
