@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>MG.Http.Urls</id>
+    <title>MG.Http.Urls</title>
+    <version>0.0.1</version>
+    <authors>Mike Garvey</authors>
+    <owners>Yevrag35, LLC.</owners>
+    <license type="file">licenses\license.txt</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/Yevrag35/MG.Http.Urls</projectUrl>
+    <description>A library providing optimized way of building URL query strings.</description>
+    <language>en-US</language>
+	<releaseNotes>GA release.</releaseNotes>
+    <copyright>Copyright © 2024 Yevrag35, LLC.</copyright>
+    <repository type="Git" url="https://github.com/Yevrag35/MG.Http.Urls.git" />
+    <summary>A library providing optimized way of building URL query strings.</summary>
+    <dependencies>
+      <group targetFramework="net8.0">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+	<file
+	  src="MG.Http.Urls\bin\Release\net8.0\MG.Http.Urls.dll"
+	  target="lib\net8.0\MG.Http.Urls.dll" />
+    <file
+      src="MG.Http.Urls\bin\Release\net8.0\MG.Http.Urls.xml"
+      target="lib\net8.0\MG.Http.Urls.xml" />
+	<file 
+	  src="MG.Http.Urls\bin\Release\net8.0\ja\MG.Http.Urls.resources.dll"
+	  target="lib\net8.0\ja\MG.Http.Urls.resources.dll" />
+    <file src="LICENSE.txt" target="licenses\" />
+  </files>
+</package>
