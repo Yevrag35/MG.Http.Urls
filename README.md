@@ -1,5 +1,7 @@
 # URL Parameter Building
 
+[![version](https://img.shields.io/nuget/v/MG.Http.Urls?style=flat-square)](https://www.nuget.org/packages/MG.Http.Urls) [![downloads](https://img.shields.io/nuget/dt/MG.Http.Urls?style=flat-square&color=darkgreen)](https://www.nuget.org/packages/MG.Http.Urls)
+
 ## Overview
 MG.Http.Urls (URL Parameter Building) is an open-source .NET 8 library designed to provide high-performance URL query parameter building capabilities. It's main use is for my own projects, but feel free to use it as well.
 It simplifies the process of constructing query parameters for HTTP requests, ensuring efficient and error-free parameter encoding.
