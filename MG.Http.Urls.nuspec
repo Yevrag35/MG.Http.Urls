@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>MG.Http.Urls</id>
     <title>MG.Http.Urls</title>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <authors>Mike Garvey</authors>
     <owners>Yevrag35, LLC.</owners>
-    <license type="file">licenses\license.txt</license>
+	<readme>docs\README.md</readme>
+    <license type="file">licenses\LICENSE.txt</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/Yevrag35/MG.Http.Urls</projectUrl>
     <description>A library providing optimized way of building URL query strings.</description>
@@ -31,5 +32,6 @@
 	  src="MG.Http.Urls\bin\Release\net8.0\ja\MG.Http.Urls.resources.dll"
 	  target="lib\net8.0\ja\MG.Http.Urls.resources.dll" />
     <file src="LICENSE.txt" target="licenses\" />
+	<file src="README.md" target="docs\" />
   </files>
 </package>
