@@ -5,6 +5,20 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<AssemblyTitle>MG.Http.Urls</AssemblyTitle>
+		<AssemblyName>MG.Http.Urls</AssemblyName>
+		<Product>URL Parameter Building</Product>
+		<RepositoryUrl>https://github.com/Yevrag35/MG.Http.Urls.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://github.com/Yevrag35/MG.Http.Urls</PackageProjectUrl>
+		<Description>A library providing optimized way of building URL query strings.</Description>
+		<Copyright>Copyright © 2024 Yevrag35, LLC.</Copyright>
+		<Company>Yevrag35, LLC.</Company>
+		<Authors>Mike Garvey</Authors>
+		<PackageId>MG.Http.Urls</PackageId>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
