@@ -23,7 +23,3 @@ Contributions are welcome! If you would like to contribute to the project, feel 
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-Make sure to customize each section with specific details about your library, including installation instructions, usage examples, and contribution guidelines. The README is often the first point of contact for potential users and contributors, so providing clear and detailed information is crucial.
