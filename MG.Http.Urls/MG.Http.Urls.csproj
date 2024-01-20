@@ -4,10 +4,11 @@
 		<TargetFrameworks>net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Using Include="MG.Http.Urls.Exceptions"/>
+		<Using Include="MG.Http.Urls.Exceptions" />
 	</ItemGroup>
 
 	<ItemGroup>

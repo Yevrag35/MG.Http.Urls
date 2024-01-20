@@ -21,7 +21,7 @@ namespace MG.Http.Urls.Queries
         /// The query parameter associated with the specified key. If not found, returns an empty 
         /// <see cref="IQueryParameter"/>.
         /// </returns>
-        /// <inheritdoc cref="QueryParameter.FromKeyOnly(string)" path="/exception"/>"
+        /// <inheritdoc cref="QueryParameter.FromKeyOnly(string)" path="/exception"/>
         public IQueryParameter this[string key]
         {
             get
@@ -246,7 +246,7 @@ namespace MG.Http.Urls.Queries
         ///      An example of the written output: <c>key1=value1&amp;key2=value2</c>
         /// </remarks>
         /// <param name="span">The destination for the formatted characters.</param>
-        /// <param name="writtenTotal">When this method returns, contains the number of characters that 
+        /// <param name="written">When this method returns, contains the number of characters that 
         /// were written in <paramref name="span"/>.</param>
         /// <param name="format">The format to use.</param>
         /// <param name="provider">An object that supplies culture-specific formatting information.</param>
@@ -286,7 +286,7 @@ namespace MG.Http.Urls.Queries
 
             return true;
         }
-
+        /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
         public IEnumerator<IQueryParameter> GetEnumerator()
         {
             return _params.GetEnumerator();
