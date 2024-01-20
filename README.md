@@ -1,7 +1,7 @@
 # URL Parameter Building
 
 ## Overview
-MG.Http.Urls (URL Parameter Building) is an open-source .NET 8 library designed to provide high-performance URL query parameter building capabilities. It's main use is for use in my own projects, but feel free to use it as well.
+MG.Http.Urls (URL Parameter Building) is an open-source .NET 8 library designed to provide high-performance URL query parameter building capabilities. It's main use is for my own projects, but feel free to use it as well.
 It simplifies the process of constructing query parameters for HTTP requests, ensuring efficient and error-free parameter encoding.
 
 ## Features
